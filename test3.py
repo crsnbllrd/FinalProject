@@ -33,8 +33,6 @@ class Converter:
             "meter",
             "centimeter",
             "kilometer",
-            "celsius",
-            "fahrenheit",
             "grams",
             "kilograms",
             "mile",
@@ -62,8 +60,6 @@ class Converter:
         self.ureg.define("meter = [length]")
         self.ureg.define("centimeter = 0.01 * meter")
         self.ureg.define("kilometer = 1000 * meter")
-        self.ureg.define("celsius = [temperature]")
-        self.ureg.define("fahrenheit = [temperature]")
         self.ureg.define("gram = [mass]")
         self.ureg.define("kilogram = 1000 * gram")
         self.ureg.define("mile = 1609.34 * meter")
@@ -90,26 +86,35 @@ class Converter:
     def convert(self):
         input_value = self.input_field_left.get("1.0", "end-1c")
 
+    # Check if input value can be converted to float
         try:
             value = float(input_value)
         except ValueError:
             self.output_text.config(text="Invalid input: " + input_value)
             return
 
+    # Check if left and right units are valid
         try:
-            result = value * self.ureg(self.left_clicked.get()).to(self.right_clicked.get())
+            left_unit = self.ureg(self.left_clicked.get())
+            right_unit = self.ureg(self.right_clicked.get())
         except pint.errors.UndefinedUnitError:
             self.output_text.config(
-                text="Invalid units: " + self.left_clicked.get() + " or " + self.right_clicked.get()
-            )
+            text="Invalid units: " + self.left_clicked.get() + " or " + self.right_clicked.get()
+        )
+            return
+
+    # Check if units are compatible
+        try:
+            result = value * left_unit.to(right_unit)
+        except pint.errors.DimensionalityError:
+            self.output_text.config(text="Incompatible units")
             return
 
         self.output_text.config(text=result.magnitude)
-
     def clear(self):
         self.input_field_left.delete("1.0", tk.END)
         self.output_text.config(text="output")        
         
 if __name__ == "__main__":
-    conv = Convertor()
+    conv = Converter()
     conv.run()
