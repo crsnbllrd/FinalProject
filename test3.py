@@ -6,20 +6,7 @@ from PIL import Image, ImageTk
 
 
 class Converter:
-    """ICONS = {
-        "meter": "length.png",
-        "centimeter": "length.png",
-        "kilometer": "length.png",
-        "celsius": "temperature.png",
-        "fahrenheit": "temperature.png",
-        "grams": "eright.png",
-        "kilograms": "weight.png",
-        "mile": "length.png",
-        "yard": "length.png",
-        "ounce": "weight.png",
-        "pound": "weight.png",
-    } """
-
+    # Initialize the converter
     def __init__(self, master):
         self.master = master
         master.geometry("600x300")
@@ -28,7 +15,7 @@ class Converter:
         left_frame = tk.Frame(master, height=1, width=1, bg="black")
         left_frame.pack(side=tk.LEFT, expand=True, fill="both")
         
-        
+        # Define units
         self.units = [
             "meter",
             "centimeter",
@@ -42,7 +29,7 @@ class Converter:
         ]
         
     
-        
+        # Define labels and pack them
         input_label = tk.Label(left_frame, text="Enter units to convert: ")
         input_label.pack(side=tk.TOP)
 
@@ -55,6 +42,7 @@ class Converter:
         self.right_clicked = tk.StringVar()
         self.right_clicked.set(self.units[0])
 
+        # Define the unit registry for conversion
         self.ureg = pint.UnitRegistry()
 
         self.ureg.define("meter = [length]")
@@ -67,10 +55,12 @@ class Converter:
         self.ureg.define("ounce = 28.3495 * gram")
         self.ureg.define("pound = 16 * ounce")
 
+        # Define label for output
         output_text = tk.Label(master, height=3, width=30, text="output")
         output_text.pack(side=tk.TOP, expand=True, fill="both")
         self.output_text = output_text
 
+        # Define buttons and dropdown menus
         convert_button = tk.Button(master, text="Convert", height=3, width=10, command=self.convert)
         convert_button.pack(side=tk.BOTTOM, expand=True, fill="x")
 
